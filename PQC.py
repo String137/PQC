@@ -47,10 +47,16 @@ class PQC:
             self.circ.append(temp,[c,o]);
 
     # def addLayer(self,num):
+    def get(self,params):
+        self.circ1 = self.circ.bind_parameters({self.params: params}); # 이걸 input으로 받자.
+        result = execute(self.circ1,self.backend).result();
+        out_state = result.get_statevector();
+        self.statevector = np.asmatrix(out_state).T;
+        return self.statevector;
 
 
     def get_statevector(self):
-        self.circ1 = self.circ.bind_parameters({self.params: np.random.uniform(0,2*np.pi,len(self.params.params))});
+        self.circ1 = self.circ.bind_parameters({self.params: np.random.uniform(0,2*np.pi,len(self.params.params))}); # 이걸 input으로 받자.
         result = execute(self.circ1,self.backend).result();
         out_state = result.get_statevector();
         self.statevector = np.asmatrix(out_state).T;
@@ -77,6 +83,13 @@ class Haar_dist(rv_continuous):
     def _pdf(self,x,n):
         return Haar(x,2**n);
 
+def getHaar(reps,bins=75,qubits=4):
+    haar = [];
+    N = qubits ** 2
+    for i in range(bins):
+        haar.append(Haar((i+0.5)/bins,N)/bins)
+    
+    return np.array(haar)
 
 def expressibility(pqc, reps):
     arr = [];
@@ -152,6 +165,7 @@ def unitary(circ,eta,phi,t):
     circ.u3(theta,phi,t,0);
 
 def V(circ,theta,phi,alpha,i):
+
     """
     theta: 0 ~ π
     phi: 0 ~ 2π
@@ -162,3 +176,14 @@ def V(circ,theta,phi,alpha,i):
     circ.rz(alpha,i);
     circ.ry(theta,i);
     circ.rz(phi,i);
+
+def circ19():
+    pqc = PQC("circ19",4)
+    for i in range(4):
+        pqc.add('rx',o=i)
+    for i in range(4):
+        pqc.add('rz',o=i)
+    for i in range(3):
+        pqc.add('crx',c=i,o=i+1)
+    pqc.add('crx',c=3,o=0);
+    return pqc
