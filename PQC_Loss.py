@@ -41,5 +41,4 @@ def Loss(params, verbose=0, bins=75, num=1000):
     # kl = torch.kl_div(hist.log(),haar_hist,reduction=1)
     p = hist*(hist/haar_hist).log()
     p[p!=p]=0
-    print("p'",p)
     return p.sum()
