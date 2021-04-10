@@ -55,7 +55,7 @@ def Loss(params, verbose=0, bins=75, num=1000):
             Fidelity = torch.cat((Fidelity,F.view(1,)),-1)
     # print(Fidelity)
     # hist = histbin(Fidelity,locations=np.arange(0,1,1/bins),radius=2/bins)
-    hist = histgauss(Fidelity,bins=250)
+    hist = histgauss(Fidelity,bins=250,sigma=1/bins)
     # print(hist)
     if verbose == 1:
         x = np.linspace(0,1,bins)
