@@ -24,6 +24,7 @@ class QuantumState:
         pexp = torch.exp(0.5j*theta)
         zero = torch.zeros(1,)
         pz = torch.cat((mexp,zero,zero,pexp))
+        pz = pz.view((2,2))
         return pz
     def SingleToMultiQubit(self,pos,p):
         eye = torch.eye(2)
